@@ -9,6 +9,7 @@ Features Include:
  - Shows a badge next to the current video being played.
  - Continuous Play option.
  - Dark theme so the video takes the main stage.
+ - Recursively scans your folder structure for videos and resource files.
  
 
 Usage
