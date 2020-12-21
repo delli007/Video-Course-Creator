@@ -8,6 +8,7 @@ Features Include:
  - Keeps track of the current video between browser restarts, uses the browsers localStorage.
  - Shows a badge next to the current video being played.
  - Continuous Play option.
+ - Video Speed Control.
  - Dark theme so the video takes the main stage.
  - Recursively scans your folder structure for videos and resource files.
  

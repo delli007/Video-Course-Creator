@@ -37,13 +37,13 @@
         height: calc(100vh);
       }
       .video{
-        height: calc(100vh - 155px - 1rem);
+        height: calc(100vh - 150px - 1rem);
         width: 100%;
         border: 0;
         outline: none;
       }
       header { height: 100px; }
-      footer { height: 55px; }
+      footer { height: 50px; }
     </style>
   </head>
 
@@ -69,15 +69,27 @@
                 Your browser does not support the video tag.
               </video>
               
-              <footer class="row">
-                <div class="col-auto form-check form-switch float-start m-2 pt-1">
+              <footer class="row m-0 align-items-center">
+                <div class="col-auto form-check form-switch mx-2 my-0">
                   <input class="form-check-input" type="checkbox" id="continuousPlay" checked>
                   <label class="form-check-label" for="continuousPlay">Continuous Play</label>
                 </div>
-                <div class="col text-muted text-center small pt-3">
-                  <span>Created from the open source project <a href="https://github.com/delli007/Video-Course-Creator" target="_blank">Video-Course-Creator</a></span>
+                <span class="col-auto text-muted px-1">|</span>
+                <div class="col-auto d-table-cell align-middle">
+                  <span class="" for="videoSpeed">Speed&nbsp;</span>
+                  <input class="align-middle text-white" type="range" min="0" max="3" step="0.25" value="1" id="videoSpeed" list="tickmarks">
+                  <code id="videoSpeedLabel">1.00x</code>
+                  <datalist id="tickmarks" class="text-white">
+                    <option value="1" label="1x"></option>
+                  </datalist>
                 </div>
-                <div class="col-auto m-2">
+                
+                <div class="col text-muted text-center small">
+                  <span class="d-none d-xl-block">Created from the open source project <a href="https://github.com/delli007/Video-Course-Creator" target="_blank">Video-Course-Creator</a>
+                  </span>
+                </div>
+                
+                <div class="col-auto">
                   <button type="button" class="btn btn-secondary" id="btnPrevious">&lt; Previous</button>
                   <button type="button" class="btn btn-success" id="btnNext">Next &gt;</button>
                 </div>
@@ -102,6 +114,8 @@
       var videoTitle = document.getElementById('videoTitle');
       var video = document.querySelector('video');
       var videoSource = video.querySelector('source');
+      var videoSpeed = document.getElementById('videoSpeed');
+      var videoSpeedLabel = document.getElementById('videoSpeedLabel');
       var continuousPlay = document.getElementById('continuousPlay');
       var btnPrevious = document.getElementById('btnPrevious');
       var btnNext = document.getElementById('btnNext');
@@ -173,15 +187,17 @@
             video.load();
             //video.play();
 
-            //update now playing badge
+            //update now playing badge and scroll into view
             np = document.getElementById('nowPlaying');
             if (np) { np.remove(); }
             np = document.querySelector('a[href="#video-' + num + '"]').parentElement;
             np.innerHTML += '<span id="nowPlaying" class="badge bg-success">Playing</span>'
+            np.scrollIntoView({behavior: "smooth", block: "center"});
           }
         }
       }
-      // handle button clicks
+
+      // handle next/previous button clicks
       btnPrevious.onclick = function() {
         if (currentVideo >= 0) {
           window.location.hash = "#video-" + (currentVideo - 1);
@@ -194,12 +210,21 @@
           window.location.hash = "#video-" + (currentVideo + 1);
         }
       }
-      // Autoplay the next video
+
+      // handle Continuous Play: Autoplay the next video
       video.addEventListener('ended', (event) => { //also "onended" could be used
         if (continuousPlay.checked) {
           btnNext.click();
         }
       });
+
+      // handle Speed
+      videoSpeed.addEventListener('input', function() { //also "oninput" could be used
+        videoSpeedLabel.innerHTML = Number(videoSpeed.value).toFixed(2) + "x";
+        video.playbackRate = videoSpeed.value;
+        video.defaultPlaybackRate = videoSpeed.value; // to keep the speed setting when the next video plays
+      }, false);
+
       
       // Set the title
       document.title = courseContent.title;
